@@ -1,0 +1,12 @@
+FROM node:18-alpine
+
+WORKDIR /usr/src/app
+
+COPY ./server/package*.json ./
+RUN npm install
+RUN npm install mongodb mongoose --save
+
+COPY ./setup-database.js .
+COPY ./server/.env ./server/.env
+
+CMD ["node", "setup-database.js"]
