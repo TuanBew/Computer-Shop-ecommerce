@@ -217,27 +217,24 @@ The admin will run on http://localhost:5173/admin
 ## Project Structure
 
 ```
-ecommerce_FINAL/
-├── compter-shop/
-│   ├── client/            # React frontend
-│   │   ├── src/
-│   │   │   ├── Components/  # Reusable UI components
-│   │   │   ├── Pages/       # Page components
-│   │   │   ├── Config/      # API configuration
-│   │   │   ├── store/       # Context API for state management
-│   │   │   ├── utils/       # Utility functions and chatbot
-│   │   │   └── ...
-│   │
-│   └── server/            # Express backend
-│       ├── src/
-│       │   ├── controllers/ # Route controllers
-│       │   ├── models/      # Mongoose models
-│       │   ├── routes/      # API routes
-│       │   ├── services/    # Business logic
-│       │   ├── utils/       # Utility functions
-│       │   └── ...
-│
-└── setup-database.js      # Database initialization script
+computer-shop/
+  client/                  # React frontend
+    src/
+      Components/          # Reusable UI components
+      Pages/               # Page components
+      Config/              # API configuration
+      store/               # Context API for state management
+      utils/               # Utility functions and chatbot
+  
+  server/                  # Express backend
+    src/
+      controllers/         # Route controllers
+      models/              # Mongoose models
+      routes/              # API routes
+      services/            # Business logic
+      utils/               # Utility functions
+  
+  setup-database.js        # Database initialization script
 ```
 
 ## Troubleshooting
