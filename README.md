@@ -42,7 +42,7 @@ Full-stack e-commerce application for selling computers & accessories. Includes 
 
 ---
 
-## Run with Docker (Recommended)
+##Docker
 
 From the repository root:
 
@@ -70,31 +70,6 @@ docker compose logs
 docker compose logs server
 docker compose logs client
 ```
-
----
-
-## Run Locally (Without Docker)
-
-### 1) Start MongoDB
-Make sure MongoDB is running and your `CONNECT_DB` points to it.
-
-### 2) Start the server
-```bash
-cd server
-npm install
-npm start
-```
-
-### 3) Start the client
-```bash
-cd client
-npm install
-npm run dev
-```
-
-Client runs at: `http://localhost:5173`
-
----
 
 ## Environment Variables
 
@@ -175,6 +150,3 @@ After the seed script runs, you can login with:
   Your server sets cookies with `secure: true` (HTTPS-only). In HTTP local development, cookies may not be stored by the browser. Consider adjusting cookie settings for local dev if needed.
 
 ---
-
-## License
-Add a license if you plan to publish this project.
