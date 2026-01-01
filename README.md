@@ -1,7 +1,5 @@
 # Computer Shop E-commerce Application
 
-This is a final project for my academic semister.
-
 A full-stack e-commerce application for selling computers and accessories, featuring user authentication, product management, shopping cart, payment processing, and an AI-powered chatbot for customer support.
 
 ## Technologies Used
