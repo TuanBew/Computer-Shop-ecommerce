@@ -51,3 +51,6 @@ logs/
 
 # Uploads
 uploads/temp/
+playwright-report/
+coverage/
+node_modules/

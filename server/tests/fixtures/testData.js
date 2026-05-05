@@ -1,3 +1,4 @@
+// Seeded admin credentials from setup-database.js (documented in README — not a real secret)
 const ADMIN_CREDENTIALS = {
   email: 'admin@computershop.com',
   password: 'admin123',
