@@ -16,6 +16,7 @@ build/
 .env.development.local
 .env.test.local
 .env.production.local
+# NOTE: .env.test files are intentionally committed — they contain only TEST_ dummy values, no real secrets
 
 # IDE and editor files
 .vscode/*
@@ -50,3 +51,6 @@ logs/
 
 # Uploads
 uploads/temp/
+playwright-report/
+coverage/
+node_modules/

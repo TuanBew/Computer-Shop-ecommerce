@@ -1,5 +1,7 @@
 # Computer Shop E-commerce (MERN)
 
+![CI](https://github.com/TuanBew/Computer-Shop-ecommerce/actions/workflows/test.yml/badge.svg?branch=feature/testing-suite)
+
 Full-stack e-commerce application for selling computers & accessories. Includes authentication (local + Google OAuth), product browsing/search, cart & ordering, multiple payment methods, and an AI chatbot + AI product comparison powered by Google Gemini.
 
 ## Repo Structure
@@ -13,7 +15,7 @@ Full-stack e-commerce application for selling computers & accessories. Includes 
 ## Tech Stack
 
 ### Frontend
-- React (Vite)
+- React 18 (Vite)
 - Ant Design
 - SCSS
 - Axios
@@ -21,7 +23,7 @@ Full-stack e-commerce application for selling computers & accessories. Includes 
 ### Backend
 - Node.js, Express
 - MongoDB (Mongoose)
-- JWT auth (access + refresh)
+- JWT auth (access + refresh, RSA keypairs)
 - Google OAuth (also used for email/OTP via Gmail OAuth)
 - Google Gemini (`@google/generative-ai`) for:
   - Chatbot (`/chat`)
@@ -31,6 +33,16 @@ Full-stack e-commerce application for selling computers & accessories. Includes 
 - MOMO
 - VNPAY
 - Cash on Delivery (COD)
+
+### Testing
+- **Jest** — backend unit and integration tests
+- **Vitest + React Testing Library** — frontend unit tests
+- **Supertest** — HTTP integration testing against Express
+- **mongodb-memory-server** — isolated in-memory MongoDB for integration tests
+- **Playwright** — E2E browser automation (5 scenarios)
+- **Selenium WebDriver** — E2E cross-framework verification (2–3 scenarios)
+- **Postman / Newman** — API contract tests (all endpoints)
+- **ESLint** — static analysis
 
 ## Getting Started
 
@@ -135,6 +147,48 @@ After the seed script runs, you can login with:
 - `POST /compare-product`
   - Body: `{ "productId1": "...", "productId2": "..." }`
   - Returns: Gemini-generated HTML comparison
+
+---
+
+## Testing
+
+The project has a full automated testing suite (50+ tests) spanning unit, integration, API contract, and end-to-end layers. See [`docs/testing/TEST-STRATEGY.md`](docs/testing/TEST-STRATEGY.md) for the full strategy and [`docs/testing/BUG-FINDINGS.md`](docs/testing/BUG-FINDINGS.md) for bugs discovered during test development.
+
+### Quick-Start Commands
+
+```bash
+# Backend unit tests (24 tests)
+cd server && npm test
+
+# Backend integration tests (~10 tests)
+cd server && npm run test:integration
+
+# Frontend unit tests (~6 tests)
+cd client && npm test
+
+# E2E tests (requires app running via docker compose up)
+npx playwright test
+
+# Run all unit + integration tests from the repo root
+npm run test:all
+```
+
+### Test Documentation
+
+| Document | Description |
+|---|---|
+| [`docs/testing/TEST-STRATEGY.md`](docs/testing/TEST-STRATEGY.md) | Full test strategy: pyramid, scope, tools, mocking strategy, CI plan |
+| [`docs/testing/BUG-FINDINGS.md`](docs/testing/BUG-FINDINGS.md) | 5 bugs found during testing (2 security, 2 functional, 1 code quality) |
+| [`docs/testing/TEST-CASES.md`](docs/testing/TEST-CASES.md) | 15 manual test cases with EP/BVA/decision table techniques |
+| [`docs/testing/DEMO-CHEAT-SHEET.md`](docs/testing/DEMO-CHEAT-SHEET.md) | Interview walkthrough guide and Q&A preparation |
+
+### CI Pipeline
+
+Three GitHub Actions jobs run on every pull request to `main`:
+
+1. **lint-and-unit** — ESLint + Jest unit tests + Vitest unit tests (~1–2 min)
+2. **integration** — Jest integration tests + Newman API contract tests (~2–3 min)
+3. **e2e** — Full stack via Docker + Playwright (~5–8 min)
 
 ---
 
