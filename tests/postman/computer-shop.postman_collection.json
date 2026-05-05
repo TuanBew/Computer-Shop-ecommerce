@@ -1,0 +1,785 @@
+{
+  "info": {
+    "name": "Computer Shop API",
+    "_postman_id": "computer-shop-v1",
+    "description": "Full API test collection for Computer Shop e-commerce",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "authToken",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"fullName\": \"Test User\", \"email\": \"test@example.com\", \"password\": \"password123\", \"phone\": \"0909000000\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "register"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+                  "pm.test(\"Has token in response\", () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.metadata).to.have.property('token');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Register User - Duplicate Email (Negative)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"fullName\": \"Test User\", \"email\": \"test@example.com\", \"password\": \"password123\", \"phone\": \"0909000000\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "register"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Duplicate email returns 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"test@example.com\", \"password\": \"password123\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Login returns token\", () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.metadata.token).to.be.a('string');",
+                  "    pm.collectionVariables.set('authToken', json.metadata.token);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login with Google",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"credential\": \"<google-id-token>\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/login-google",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "login-google"]
+            }
+          }
+        },
+        {
+          "name": "Get Auth (requires token cookie)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth"]
+            },
+            "description": "Requires `token` cookie set by login. Returns encrypted user data."
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "logout"]
+            },
+            "description": "Requires `token` cookie."
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/refresh-token",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "refresh-token"]
+            },
+            "description": "Requires `refreshToken` cookie."
+          }
+        },
+        {
+          "name": "Send Forgot Password Mail",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"test@example.com\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/send-mail-forgot-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "send-mail-forgot-password"]
+            }
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"otp\": \"123456\", \"newPassword\": \"newpassword123\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/reset-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reset-password"]
+            },
+            "description": "Requires `tokenOtp` cookie set after sending forgot-password mail."
+          }
+        },
+        {
+          "name": "Change Password (auth required)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"oldPassword\": \"password123\", \"newPassword\": \"newpassword123\", \"confirmPassword\": \"newpassword123\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/change-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "change-password"]
+            }
+          }
+        },
+        {
+          "name": "Update User Info (auth required)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"fullName\": \"Updated Name\", \"phone\": \"0900111222\", \"email\": \"test@example.com\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/update-info-user",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "update-info-user"]
+            }
+          }
+        },
+        {
+          "name": "Update Password (auth required)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"oldPassword\": \"password123\", \"newPassword\": \"newpassword123\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/update-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "update-password"]
+            }
+          }
+        },
+        {
+          "name": "Get Admin Stats (admin auth required)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/get-admin-stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "get-admin-stats"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Blocked without auth\", () => {",
+                  "    pm.expect(pm.response.code).to.be.at.least(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Users (admin auth required)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/get-all-users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "get-all-users"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Get All Products (paginated)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Returns products array\", () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.metadata.products).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Product by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/product?id=<productId>",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "product"],
+              "query": [
+                { "key": "id", "value": "<productId>" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Products - Admin",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/all-product",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "all-product"]
+            }
+          }
+        },
+        {
+          "name": "Search Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/search-product?keyword=laptop",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "search-product"],
+              "query": [
+                { "key": "keyword", "value": "laptop" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Filter Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/filter-product?category=laptop&minPrice=500&maxPrice=2000",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "filter-product"],
+              "query": [
+                { "key": "category", "value": "laptop" },
+                { "key": "minPrice", "value": "500" },
+                { "key": "maxPrice", "value": "2000" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Add Product (admin auth required)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"Gaming Laptop\", \"price\": 1500, \"description\": \"High performance gaming laptop\", \"category\": \"laptop\", \"stock\": 10, \"brand\": \"Acer\", \"specifications\": {}}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/add-product",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "add-product"]
+            }
+          }
+        },
+        {
+          "name": "Upload Product Image (admin auth required)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/upload-image",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "upload-image"]
+            }
+          }
+        },
+        {
+          "name": "Edit Product (admin auth required)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"id\": \"<productId>\", \"name\": \"Updated Gaming Laptop\", \"price\": 1400, \"stock\": 8}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/edit-product",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "edit-product"]
+            }
+          }
+        },
+        {
+          "name": "Delete Product (admin auth required)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/delete-product?id=<productId>",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "delete-product"],
+              "query": [
+                { "key": "id", "value": "<productId>" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cart",
+      "item": [
+        {
+          "name": "Add to Cart (auth required)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"productId\": \"<productId>\", \"quantity\": 2}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/add-to-cart",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "add-to-cart"]
+            }
+          }
+        },
+        {
+          "name": "Add to Cart - Unauthenticated (Negative)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"productId\": \"<productId>\", \"quantity\": 2}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/add-to-cart",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "add-to-cart"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Unauthenticated cart returns 4xx\", () => {",
+                  "    pm.expect(pm.response.code).to.be.at.least(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Cart (auth required)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/get-cart",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "get-cart"]
+            }
+          }
+        },
+        {
+          "name": "Delete Cart Item (auth required)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/delete-cart?productId=<productId>",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "delete-cart"],
+              "query": [
+                { "key": "productId", "value": "<productId>" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Cart User Info (auth required)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"fullName\": \"Test User\", \"phone\": \"0909000000\", \"address\": \"123 Main St, Ho Chi Minh City\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/update-info-user-cart",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "update-info-user-cart"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Create Payment (auth required)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"typePayments\": \"cod\", \"fullName\": \"Test User\", \"phone\": \"0909000000\", \"address\": \"123 Main St\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/payment",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "payment"]
+            }
+          }
+        },
+        {
+          "name": "Check MoMo Payment (auth required)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/check-payment-momo?orderId=<orderId>&requestId=<requestId>",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "check-payment-momo"],
+              "query": [
+                { "key": "orderId", "value": "<orderId>" },
+                { "key": "requestId", "value": "<requestId>" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Check VNPay Payment (auth required)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/check-payment-vnpay?vnp_TxnRef=<txnRef>&vnp_ResponseCode=00",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "check-payment-vnpay"],
+              "query": [
+                { "key": "vnp_TxnRef", "value": "<txnRef>" },
+                { "key": "vnp_ResponseCode", "value": "00" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Order History (auth required)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/get-history-order",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "get-history-order"]
+            }
+          }
+        },
+        {
+          "name": "Get One Payment (auth required)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/get-one-payment?id=<paymentId>",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "get-one-payment"],
+              "query": [
+                { "key": "id", "value": "<paymentId>" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Order Status - Admin (admin auth required)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"orderId\": \"<orderId>\", \"status\": \"delivered\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/update-status-order",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "update-status-order"]
+            }
+          }
+        },
+        {
+          "name": "Get All Orders - Admin (admin auth required)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/get-order-admin",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "get-order-admin"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "AI",
+      "item": [
+        {
+          "name": "Chat",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"question\": \"What laptops do you recommend for gaming?\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/chat",
+              "host": ["{{baseUrl}}"],
+              "path": ["chat"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Returns non-empty response\", () => {",
+                  "    const text = pm.response.text();",
+                  "    pm.expect(text.length).to.be.greaterThan(0);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Compare Products",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"productId1\": \"<productId1>\", \"productId2\": \"<productId2>\"}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/compare-product",
+              "host": ["{{baseUrl}}"],
+              "path": ["compare-product"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
