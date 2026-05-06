@@ -1,13 +1,5 @@
 # Selenium E2E Tests
 
-## Why Selenium alongside Playwright?
-
-Playwright is the modern choice for new projects. Selenium appears in ~70% of QA job descriptions and dominates enterprise testing. Having both proves:
-
-1. The critical flows pass regardless of the automation framework
-2. If Playwright and Selenium disagree — that disagreement **is itself a finding** worth investigating
-3. The test engineer understands dual-framework discipline
-
 ## Prerequisites
 
 1. Chrome browser installed
